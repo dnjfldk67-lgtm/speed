@@ -40,14 +40,18 @@ function renderBest(){
   bestEl.textContent = best ? `🏆 최고기록: ${best} ms` : "🏆 최고기록 없음";
 }
 
+const params = new URLSearchParams(window.location.search);
+const CURRENT_FBASE_USER_ID = params.get("fBaseUserID") || "guest";
+
 // Firestore 저장
 async function saveScoreDB(ms){
   try{
     await addDoc(collection(db, "reaction_scores"), {
       ms,
+      fBaseUserID: CURRENT_FBASE_USER_ID, // ✅ 여기!
       created_at: serverTimestamp()
     });
-    console.log("DB 저장 완료:", ms);
+    console.log("DB 저장 완료:", ms, "user:", CURRENT_FBASE_USER_ID);
   }catch(e){
     console.error("DB 저장 실패:", e);
   }
